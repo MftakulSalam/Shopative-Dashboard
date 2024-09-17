@@ -26,14 +26,6 @@ type ProductFormSchema = z.infer<typeof productFormSchema>;
 export default function UpdatePage() {
   const { push, query } = useRouter();
   const [loading, setLoading] = useState(false);
-  const [product, setProduct] = useState<ProductType>({
-    product_name: "",
-    category: "",
-    color: "",
-    storage: "",
-    description: "",
-    price: 0,
-  });
 
   const { register, formState, handleSubmit, setValue } =
     useForm<ProductFormSchema>({
@@ -43,7 +35,6 @@ export default function UpdatePage() {
   useEffect(() => {
     if (!query.id) return;
     axios.get(`/api/products?id=${query.id}`).then((res) => {
-      setProduct(res.data.product);
       setValue("product_name", res.data.product.product_name);
       setValue("category", res.data.product.category);
       setValue("color", res.data.product.color);
@@ -95,6 +86,8 @@ export default function UpdatePage() {
         method: "POST",
         data,
       });
+      console.log(res.data);
+      
       if (res.status === 200) {
         setLoading(false);
         push("/products");
@@ -248,7 +241,7 @@ export default function UpdatePage() {
               </div>
             </div>
             <div className="basis-1/2 -mt-5 flex flex-col relative">
-              {true ? (
+              {false ? (
                 <div className="h-fit grid grid-cols-2 grid-rows-2 gap-4">
                   <div className="rounded-3xl h-72 bg-white">
                     <Image

@@ -50,18 +50,8 @@ export const FileUpload = () =>
             data.append("files", file);
           }
         }
-        const res = await axios("/api/upload", {
-          method: "POST",
-          data,
-        });
-        console.log(res.data);
-        
-        // if (res.status === 200) {
-          // setLoading(false);
-          // push("/products");
-        // } else {
-          // setLoading(false);
-        // }
+        const res = await axios.post("/api/upload", data);
+
       }
     };
 
