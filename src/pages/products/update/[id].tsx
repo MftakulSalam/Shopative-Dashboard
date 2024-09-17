@@ -244,7 +244,7 @@ export default function UpdatePage() {
                 )}
               </div>
               <div className="w-full mb-5 group">
-                <FileUpload onChange={uploadImages} />
+                <FileUpload  />
               </div>
             </div>
             <div className="basis-1/2 -mt-5 flex flex-col relative">

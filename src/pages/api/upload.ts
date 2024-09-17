@@ -7,7 +7,9 @@ export default async function handler(
 ) {
   const form = new multiparty.Form();
   form.parse(req, (err, fields, files) => {
-    console.log(files.length);
+    console.log(files.files);
+    console.log(fields);
+    
     res.json("ok");
   });
 }
