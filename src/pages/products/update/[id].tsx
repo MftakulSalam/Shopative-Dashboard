@@ -8,7 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { ChangeEventHandler, useEffect, useState } from "react";
+import React, { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -26,7 +26,9 @@ type ProductFormSchema = z.infer<typeof productFormSchema>;
 export default function UpdatePage() {
   const { push, query } = useRouter();
   const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
 
+  //📄 SETUP FORM
   const { register, formState, handleSubmit, setValue } =
     useForm<ProductFormSchema>({
       resolver: zodResolver(productFormSchema),
@@ -35,6 +37,7 @@ export default function UpdatePage() {
   useEffect(() => {
     if (!query.id) return;
     axios.get(`/api/products?id=${query.id}`).then((res) => {
+      setImages(res.data.product.images);
       setValue("product_name", res.data.product.product_name);
       setValue("category", res.data.product.category);
       setValue("color", res.data.product.color);
@@ -44,20 +47,13 @@ export default function UpdatePage() {
     });
   }, [query.id]);
 
-  const [files, setFiles] = useState<File[]>([]);
-  const handleFileUpload = (files: File[]) => {
-    setFiles(files);
-    console.log(files);
-  };
-
   const onSubmit = handleSubmit(async (value) => {
     try {
       setLoading(true);
       if (query.id) {
-        // alert(JSON.stringify({ ...value, files, _id: query.id }, null, 2));
         const res = await axios.put("/api/products/", {
           ...value,
-          // files,
+          images: imageLinks,
           _id: query.id,
         });
         if (res.status === 200) {
@@ -71,10 +67,13 @@ export default function UpdatePage() {
       setLoading(false);
     }
   });
+  //📄 SETUP FORM
+
+  //📷 SETUP PRODUCT IMAGE
+  const [imageLinks, setImageLinks] = useState<string[]>([]);
 
   const uploadImages: ChangeEventHandler<HTMLInputElement> = async (ev) => {
-    console.log("JANCOK");
-    const files = ev.target.files ? Array.from(ev.target.files) : []; // Ubah FileList menjadi array
+    const files = ev.target.files ? Array.from(ev.target.files) : [];
     if (files?.length > 0) {
       const data = new FormData();
       if (files) {
@@ -86,16 +85,14 @@ export default function UpdatePage() {
         method: "POST",
         data,
       });
-      console.log(res.data);
-      
-      if (res.status === 200) {
-        setLoading(false);
-        push("/products");
-      } else {
-        setLoading(false);
-      }
+      console.log(res.data.links);
+      const newImageLinks = [...imageLinks, res.data.links[0]];
+      setImageLinks(newImageLinks);
     }
   };
+  //📷 SETUP PRODUCT IMAGE
+
+  const modalRef = useRef<HTMLDivElement>(null);
 
   return (
     <AppShell>
@@ -237,56 +234,23 @@ export default function UpdatePage() {
                 )}
               </div>
               <div className="w-full mb-5 group">
-                <FileUpload  />
+                <FileUpload imagesLength={images.length} onChange={uploadImages} />
               </div>
             </div>
-            <div className="basis-1/2 -mt-5 flex flex-col relative">
-              {false ? (
+            <div className="basis-1/2 -mt-5 flex flex-col relative h-screen">
+              {images && images.length > 0 ? (
                 <div className="h-fit grid grid-cols-2 grid-rows-2 gap-4">
-                  <div className="rounded-3xl h-72 bg-white">
-                    <Image
-                      className="object-contain h-72"
-                      src={
-                        "https://www.apple.com/newsroom/images/2024/09/apple-introduces-iphone-16-and-iphone-16-plus/article/geo/Apple-iPhone-16-hero-geo-240909_inline.jpg.large_2x.jpg"
-                      }
-                      alt="product-img-1"
-                      width={500}
-                      height={500}
-                    />
-                  </div>
-                  <div className="rounded-3xl h-72 bg-white">
-                    <Image
-                      className="object-contain h-72"
-                      src={
-                        "https://www.apple.com/newsroom/images/2024/09/apple-introduces-iphone-16-and-iphone-16-plus/article/geo/Apple-iPhone-16-hero-geo-240909_inline.jpg.large_2x.jpg"
-                      }
-                      alt="product-img-1"
-                      width={500}
-                      height={500}
-                    />
-                  </div>
-                  <div className="rounded-3xl h-72 bg-white">
-                    <Image
-                      className="object-contain h-72"
-                      src={
-                        "https://www.apple.com/newsroom/images/2024/09/apple-introduces-iphone-16-and-iphone-16-plus/article/geo/Apple-iPhone-16-hero-geo-240909_inline.jpg.large_2x.jpg"
-                      }
-                      alt="product-img-1"
-                      width={500}
-                      height={500}
-                    />
-                  </div>
-                  <div className="rounded-3xl h-72 bg-white">
-                    <Image
-                      className="object-contain h-72"
-                      src={
-                        "https://www.apple.com/newsroom/images/2024/09/apple-introduces-iphone-16-and-iphone-16-plus/article/geo/Apple-iPhone-16-hero-geo-240909_inline.jpg.large_2x.jpg"
-                      }
-                      alt="product-img-1"
-                      width={500}
-                      height={500}
-                    />
-                  </div>
+                  {images.map((image, idx) => (
+                    <div className="rounded-3xl h-72 bg-white" key={idx}>
+                      <Image
+                        className="object-contain h-72"
+                        src={image}
+                        alt="product-img-1"
+                        width={500}
+                        height={500}
+                      />
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="w-full h-full flex justify-center items-center">

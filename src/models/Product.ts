@@ -7,6 +7,7 @@ const ProductSchema = new Schema({
   storage: { type: String },
   description: { type: String },
   price: { type: Number },
+  images: [{ type: String }],
 });
 
 export const Product = models.Product || model("Product", ProductSchema);

@@ -72,17 +72,19 @@ export default async function handler(
         storage,
         description,
         _id,
+        images
       } = req.body;
 
       const updateProductResponse = await Product.updateOne(
         { _id },
-        { product_name, category, price, color, storage, description }
+        { product_name, category, price, color, storage, description, images }
       );
       res.status(200).json({
         statusCode: 200,
         status: true,
         message: "Product updated successfully",
         new_data: req.body,
+        images: typeof images,
         updateProductResponse,
       });
     } catch (error) {

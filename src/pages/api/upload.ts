@@ -48,9 +48,6 @@ export default async function handler(
       links.push(link);
     }
     res.json({
-      statusCode: 200,
-      status: true,
-      message: "Image uploaded",
       links,
     });
   } catch (error) {

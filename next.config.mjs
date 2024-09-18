@@ -16,7 +16,7 @@ const nextConfig = {
     //     pathname: "/**",
     //   },
     // ],
-    domains: ["assets.aceternity.com", "lh3.googleusercontent.com", "www.apple.com"],
+    domains: ["assets.aceternity.com", "lh3.googleusercontent.com", "www.apple.com", "shopative-dashboard.s3.amazonaws.com"],
   },
 };
 

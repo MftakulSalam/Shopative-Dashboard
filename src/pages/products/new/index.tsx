@@ -18,13 +18,14 @@ const productFormSchema = z.object({
 type ProductFormSchema = z.infer<typeof productFormSchema>;
 
 export default function NewProductPage() {
-  const { register, handleSubmit, formState } = useForm<ProductFormSchema>({
-    resolver: zodResolver(productFormSchema),
-  });
-
   const [loading, setLoading] = useState(false);
   const { push } = useRouter();
 
+  //📄 SETUP FORM
+  const { register, handleSubmit, formState } = useForm<ProductFormSchema>({
+    resolver: zodResolver(productFormSchema),
+  });
+  
   const onSubmit = handleSubmit(async (value) => {
     setLoading(true);
     try {
@@ -44,6 +45,7 @@ export default function NewProductPage() {
       setLoading(false);
     }
   });
+  //📄 SETUP FORM
 
   return (
     <AppShell>
