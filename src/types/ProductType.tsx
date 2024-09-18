@@ -6,4 +6,5 @@ export type ProductType = {
   storage: string;
   description: string;
   price: number;
+  images?: string[]
 };

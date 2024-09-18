@@ -66,7 +66,7 @@ export default function AppShell(props: { children: React.ReactNode }) {
                   key={idx}
                   link={link}
                   className={
-                    pathname === link.href ||
+                    (pathname.includes(link.href) && link.href !== "/") ||
                     (link.href === "/" && pathname === "/")
                       ? "font-bold text-blue-400"
                       : "text-black"
